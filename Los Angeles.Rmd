@@ -1,0 +1,46 @@
+---
+title: "Group Project"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+calidata <- read.csv("https://data.ca.gov/dataset/590188d5-8545-4c93-a9a0-e230f0db7290/resource/926fd08f-cc91-4828-af38-bd45de97f8c3/download/statewide_cases.csv")
+head(calidata)
+ladata <- filter(calidata, county == "Los Angeles")
+head(ladata)
+#june 18 2020
+ladata$date<-as.Date(ladata$date)
+ggplot(ladata, aes(x=date, y=newcountconfirmed)) + geom_point(size = .5) + geom_vline(xintercept=as.Date("2020-06-18"))
+ggplot(ladata, aes(x=date, y=newcountdeaths)) + geom_point(size = .5) + geom_vline(xintercept=as.Date("2020-06-18"))
+ggplot(ladata, aes(x=date, y=totalcountconfirmed)) + geom_point(size = .5) + geom_vline(xintercept=as.Date("2020-06-18"))
+ggplot(ladata, aes(x=date, y=totalcountdeaths)) + geom_point(size = .5) + geom_vline(xintercept=as.Date("2020-06-18"))
+
+```
+
+
+
+

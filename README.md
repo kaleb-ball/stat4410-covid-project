@@ -2,7 +2,7 @@
 1. Go to folder in command prompt
   a. cd path/../folder
 2. Update/Add File
-  a. Update Local Repo
+a. Update Local Repo
     i. git pull
   b. Add/Update
     i. Commit New File

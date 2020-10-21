@@ -4,7 +4,6 @@
 * Update/Add File <br />
   * Update Local Repo <br />
     * git pull <br />
-   * Add/Update <br />
     * Commit New File
       * git add filename
       * git commit -m "Message"

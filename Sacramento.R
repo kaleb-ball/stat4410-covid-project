@@ -1,4 +1,4 @@
-statecases<-read.csv("C:/Users/Joey/Documents/MATH 4410/statewide_cases.csv")
+statecases<-read.csv("C:/Users/Joey/Documents/MATH 4410/Group Project 1/stat4410-covid-project/statewide_cases.csv")
 statetests<-read.csv("C:/Users/Joey/Documents/MATH 4410/statewide_testing.csv")
 library(ggplot2)
 library(plotly)
@@ -47,7 +47,7 @@ ggplot(subsac, aes(date, percentdead))+geom_line()+
                 label="Jun 18", y=5), 
             angle=90, vjust = 1.2, size=3.5)
 
-ggplot(subsac2, aes(date, newcountconfirmed))+geom_point()+
+ggplot(subsac2, aes(date, newcountconfirmed))+geom_point(size = 1)+
   geom_vline(xintercept=as.Date("2020-06-18")) +
   xlab("Date") + ylab("New Cases Per Day") +
   geom_text(aes(x=as.Date("2020-06-18"), 
@@ -60,4 +60,8 @@ ggplot(subsac2, aes(date, newcountconfirmed))+geom_point()+
 #ggplot(subsac2, aes(date, newcountconfirmed))+geom_line()+
 #  geom_vline(xintercept=as.Date("2020-06-18"))
 
-
+# cd folder/folder/folder
+# git add filename.R
+# git commit -m "Name"
+# git pull
+# git push origin master

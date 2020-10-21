@@ -1,8 +1,8 @@
 # stat4410-covid-project
 1. Go to folder in command prompt
   a. cd path/../folder
-2. Update/Add File
-a. Update Local Repo
+2. Update/Add File <br />
+  a. Update Local Repo <br />
     i. git pull
   b. Add/Update
     i. Commit New File

@@ -3,8 +3,8 @@
   a. cd path/../folder
 2. Update/Add File <br />
   a. Update Local Repo <br />
-    i. git pull
-  b. Add/Update
+    i. git pull <br />
+  b. Add/Update <br />
     i. Commit New File
       - git add filename
       - git commit -m "Message"

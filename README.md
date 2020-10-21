@@ -3,7 +3,7 @@
   a. cd path/../folder
 2. Update/Add File
   a. Update Local Repo
-    i. git pull 
+    i. git pull
   b. Add/Update
     i. Commit New File
       - git add filename

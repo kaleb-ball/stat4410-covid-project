@@ -60,4 +60,4 @@ ggplot(subsac2, aes(date, newcountconfirmed))+geom_point()+
 #ggplot(subsac2, aes(date, newcountconfirmed))+geom_line()+
 #  geom_vline(xintercept=as.Date("2020-06-18"))
 
-#kjsdag
+

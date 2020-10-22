@@ -1,0 +1,25 @@
+library(dplyr)
+library(lubridate)
+library(magrittr)
+
+csv <- read.csv("COVID-19_Statistics_by_ZIP_Code.csv")
+cols<-c("X", "Y", "ziptext", "case_count", "updatedate")
+san_diego_covid <- san_diego_covid <- csv[, (names(csv) %in% cols)]
+san_diego_covid$updatedate <- as.Date(gsub(' \\d+:\\d+:\\d+[\\+]\\d+', '', san_diego_covid$updatedate),"%Y/%m/%d")
+
+
+san_diego_range <- function(x,y) {
+  san_diego_covid %<>%
+    filter(updatedate >= as.Date(x) & updatedate <= as.Date(y))
+  return(san_diego_covid)
+}
+
+sum <- function (x) {
+  x %<>% 
+    group_by(ziptext) %>%
+    summarise(case_count = sum(case_count))
+  return(x)
+}
+
+test <- san_diego_range("2020-04-02", today())
+

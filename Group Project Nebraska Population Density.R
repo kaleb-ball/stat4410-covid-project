@@ -1,0 +1,106 @@
+#loads in all required packages
+library(dplyr)
+library(ggplot2)
+library(dostats)
+library(lubridate)
+library(plotly)
+library(hrbrthemes)
+
+#reads in required files
+countyHist <- read.csv("C:/Users/Joey/Documents/MATH 4410/us-counties.csv")
+pops <- read.csv("C:/Users/Joey/Documents/MATH 4410/county-population-data.csv")
+
+#filter covid data for only counties in Nebraska, then group by county
+countyHist$county <- tolower(countyHist$county)
+nebHist <- countyHist[countyHist$state == "Nebraska",]
+nebHistOrder <- arrange(nebHist, county, desc(county))
+
+#filter population data for only Nebraska counties, exclude the total population
+pops <- pops[pops$STNAME == "Nebraska" & pops$CTYNAME != "Nebraska",]
+#removes " County" from the CTYNAME column for ability to merge with covid data
+pops$CTYNAME <- sub(" County", "", pops$CTYNAME)
+#only care about county name and 2019 population estimate, so extract those
+pops <- data.frame(pops$CTYNAME, pops$POPESTIMATE2019)
+#renaming columns
+colnames(pops) <- c("county", "population")
+pops$county <- tolower(pops$county)
+#join covid and population data
+nebHist2 <- inner_join(nebHistOrder, pops)
+#reformat date column
+nebHist2$date <- as.Date(nebHist2$date)
+#create new column for percent of population tested positive
+nebHist2$percent <- nebHist2$cases * 100 / nebHist2$population
+nebHist2$percentdeaths <- nebHist2$deaths * 100 / nebHist2$cases
+
+douglas <- nebHist2[nebHist2$county == "douglas", ]
+
+#Fatality Rate time series scatter plot
+ggplot(douglas, aes(date, percentdeaths)) + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  geom_point(size = 1) + ggtitle("Fatality Rate (Douglas County)") +
+  xlab("Date") + ylab("Fatality Rate") 
+
+
+#scatterplot of population versus Percent tested positive, with
+#line for average percent
+current <- nebHist2[nebHist2$date == as.Date("2020-12-09"),]
+
+
+#Percent infected graph facet wrapped with 3 different months
+first <- data.frame(nebHist2, day(nebHist2$date), month(nebHist2$date))
+colnames(first)[10] <- "day"
+colnames(first)[11] <- "month"
+first <- first[first$day == 1,]
+first <- first[first$month == 4 | first$month == 8 | first$month == 12,]
+cnum <- data.frame(first$county)
+cnum <- data.frame(summary(as.factor(first$county)))
+cnum <- data.frame(cnum, c(rownames(cnum)))
+colnames(cnum) = c("number", "county")
+cnum <- cnum %>% top_n(8, number) #dplyr
+cnum <- cnum[c(1,14,19,10,4,8,21,16),]
+cnum <- inner_join(cnum, pops)
+names <- data.frame(rep(cnum$county, each = 3))
+colnames(names) <- c("county")
+frtw <- seq(4, 12, by = 4)
+frtw <- data.frame(rep(frtw, 8))
+names <- data.frame(names, frtw)
+colnames(names) <- c("county", "month")
+names2 <- inner_join(first, names)
+myMonths <- c("Janurary", "February", "March", "April", "May",
+              "June", "July", "August", "September", "October",
+              "November", "December")
+names2$month <- myMonths[names2$month]
+
+substring(names2$county, 1,1)
+substring(names2$county, 2, nchar(names2$county))
+names2$county <- paste(toupper(substring(names2$county, 1, 1)),
+                       substring(names2$county, 2, nchar(names2$county)),
+                       sep = "")
+ggplot(names2, aes(x = population / 1000, y = percent, 
+                        colour = county, label = county)) +
+  geom_point() + facet_wrap(~month) + ggtitle("Percent infected over time") +
+  xlab("Population (in thousands)") + ylab("Percent Infected")+
+  labs(colour = "County")
+
+
+us.dat <- map_data("state")
+ct.dat <- map_data("county")
+nemap <- us.dat[us.dat$region == "nebraska",]
+nect <- ct.dat[ct.dat$region == "nebraska",]
+colnames(nect)[6] <- "county"
+covidmap <- inner_join(current, nect)
+
+#Death Rate Map
+ggplot(covidmap, aes(x=long, y=lat, group = group)) +
+  geom_polygon(aes(fill=percentdeaths), colour = alpha("white", 1/2), size = 0.2) + theme_bw() + 
+  theme(legend.position = "none", text = element_blank(), line = element_blank()) + 
+  scale_fill_viridis(option = "inferno", name = "Death Rate %") +
+  coord_map("polyconic") + labs(title = "Covid Death Rate by County") + theme_ipsum()
+
+#Percent Infected
+ggplot(covidmap, aes(x=long, y=lat, group = group)) +
+  geom_polygon(aes(fill=percent), colour = alpha("white", 1/2), size = 0.2) + theme_bw() + 
+  theme(legend.position = "none", text = element_blank(), line = element_blank()) + 
+  scale_fill_viridis(option = "inferno", name = "Death Rate %") +
+  coord_map("polyconic") + labs(title = "Percent Infected by County") + 
+  theme_ipsum()

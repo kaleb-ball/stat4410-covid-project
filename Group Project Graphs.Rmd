@@ -56,8 +56,8 @@ ggplot(douglas, aes(date, percentdeaths)) +
 #Infection Rate times series scatter plot
 ggplot(douglas, aes(date, percent)) + 
   theme(plot.title = element_text(hjust = 0.5)) +
-  geom_point(size = 1) + ggtitle("Infection Rate (Douglas County)") +
-  xlab("Date") + ylab("Infection Rate") 
+  geom_point(size = 1) + ggtitle("Percent Infected (Douglas County)") +
+  xlab("Date") + ylab("Percent Infected") 
 
 
 
